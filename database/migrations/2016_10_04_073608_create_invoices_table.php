@@ -11,6 +11,7 @@ class CreateInvoicesTable extends Migration
     {
         Schema::create('invoices', function (Blueprint $table) {
             $table->increments('id');
+            $table->string('url');
             $table->timestamps();
             $table->timestamp('deleted_at')->nullable();
         });

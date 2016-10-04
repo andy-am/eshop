@@ -26,4 +26,8 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    public function favourites(){
+        return $this->belongsToMany(Product::class,'favourites','user_id', 'product_id');
+    }
 }

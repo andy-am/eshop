@@ -16,6 +16,7 @@ class CreateProductsTable extends Migration
         Schema::create('products', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('category_id')->unsigned();
+            $table->integer('brand_id')->unsigned();
             $table->string('name');
             $table->string('title');
             $table->string('description');
@@ -29,6 +30,9 @@ class CreateProductsTable extends Migration
             $table->boolean('percentage_action')->default(0);
             $table->timestamps();
             $table->timestamp('deleted_at')->nullable();
+
+            $table->foreign('category_id')->references('id')->on('categories')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreign('brand_id')->references('id')->on('brands')->onUpdate('cascade')->onDelete('cascade');
         });
     }
 
