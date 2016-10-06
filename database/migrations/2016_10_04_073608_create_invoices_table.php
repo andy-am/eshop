@@ -11,9 +11,13 @@ class CreateInvoicesTable extends Migration
     {
         Schema::create('invoices', function (Blueprint $table) {
             $table->increments('id');
+            $table->string('invoice_number');
+            $table->integer('order_id')->unsigned();
+            $table->boolean('status')->default(0);
             $table->string('url');
             $table->timestamps();
             $table->timestamp('deleted_at')->nullable();
+            $table->foreign('order_id')->references('id')->on('orders')->onUpdate('cascade')->onDelete('cascade');
         });
     }
 

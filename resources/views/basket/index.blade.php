@@ -79,7 +79,8 @@
                         </div>
                         <div class="pull-right">
                             <button type="submit" class="btn btn-default"><i class="fa fa-refresh"></i> Update cart</button>
-                            <a href="{{ url('/order/proceedToCheckoutStep_1') }}" class="btn btn-template-main">Proceed to checkout <i class="fa fa-chevron-right"></i></a>
+                            {{--<a href="{{ url('/order/proceedToCheckoutStep_1') }}" class="btn btn-template-main">Proceed to checkout <i class="fa fa-chevron-right"></i></a>--}}
+                            <a href="{{ url('/order/doOrder') }}" class="btn btn-template-main">Create Order<i class="fa fa-chevron-right"></i></a>
                         </div>
                     </div>
 

@@ -35,5 +35,8 @@ Route::get('/order/basket', 'ProductController@basket');
 Route::post('/order/updateBasket', 'ProductController@updateBasket');
 Route::get('/order/proceedToCheckoutStep_1', 'ProductController@proceedToCheckoutStep_1');
 
+Route::get('/order/doOrder', 'ProductController@doOrder');
+Route::get('/order/showInvoice', 'ProductController@showInvoice');
+
 Route::get('/user/favourites', 'UserController@favourites');
 
