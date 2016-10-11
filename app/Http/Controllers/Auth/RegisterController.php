@@ -6,6 +6,7 @@ use App\User;
 use Validator;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\RegistersUsers;
+use App\Notifications\RegisterNotification;
 
 class RegisterController extends Controller
 {
@@ -21,6 +22,8 @@ class RegisterController extends Controller
     */
 
     use RegistersUsers;
+
+
 
     /**
      * Where to redirect users after login / registration.
@@ -52,6 +55,7 @@ class RegisterController extends Controller
             'last_name' => 'required|max:255',
             'email' => 'required|email|max:255|unique:users',
             'nickname' => 'required|max:30|unique:users',
+            'mobile_number' => '|max:30|unique:users',
             'country' => 'required',
             'street' => 'required',
             'zip_code' => 'required|numeric',
@@ -72,6 +76,10 @@ class RegisterController extends Controller
 
         $data['password'] = bcrypt($data['password']);
 
-        return User::create($data);
+        $user = User::create($data);
+
+        $user->notify(new RegisterNotification() );
+
+        return $user;
     }
 }

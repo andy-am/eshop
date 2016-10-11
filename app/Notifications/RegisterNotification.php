@@ -7,9 +7,11 @@ use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 
-class WelcomeToEshopNotification extends Notification
+class RegisterNotification extends Notification
 {
     use Queueable;
+
+
 
     /**
      * Create a new notification instance.
@@ -41,9 +43,11 @@ class WelcomeToEshopNotification extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-                    ->line('The introduction to the notification.')
-                    ->action('Notification Action', 'https://laravel.com')
-                    ->line('Thank you for using our application!');
+                    ->success()
+                    ->subject("Vitajte ne našej stránke e-shopu")
+                    ->line('Sme radi, že si sa rozhodol pridať do komunity nášho e-shopu.')
+                    ->action('Login', url("/login"))
+                    ->line('Ďakujeme!');
     }
 
     /**

@@ -36,7 +36,10 @@ Route::post('/order/updateBasket', 'ProductController@updateBasket');
 Route::get('/order/proceedToCheckoutStep_1', 'ProductController@proceedToCheckoutStep_1');
 
 Route::get('/order/doOrder', 'ProductController@doOrder');
-Route::get('/order/showInvoice', 'ProductController@showInvoice');
+Route::get('/order/showInvoice', 'ProductController@showInvoice')->middleware('auth');
 
 Route::get('/user/favourites', 'UserController@favourites');
+
+
+Route::post('/api/product/removeItemFromBasket/{id}', 'ProductController@removeItemFromBasketAjax');
 

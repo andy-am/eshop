@@ -38,7 +38,7 @@ return array(
          * Times-Roman, Times-Bold, Times-BoldItalic, Times-Italic,
          * Symbol, ZapfDingbats.
          */
-        "DOMPDF_FONT_DIR" => public_path().'/template/css/fonts/', // advised by dompdf (https://github.com/dompdf/dompdf/pull/782)
+        "DOMPDF_FONT_DIR" => storage_path('fonts/'), // advised by dompdf (https://github.com/dompdf/dompdf/pull/782)
 
         /**
          * The location of the DOMPDF font cache directory
@@ -82,7 +82,7 @@ return array(
          * When enabled, dompdf can support all Unicode glyphs. Any glyphs used in a
          * document must be present in your fonts, however.
          */
-        "DOMPDF_UNICODE_ENABLED" => false,
+        "DOMPDF_UNICODE_ENABLED" => true,
 
         /**
          * Whether to enable font subsetting or not.
@@ -195,7 +195,7 @@ return array(
          *
          * @var int
          */
-        "DOMPDF_DPI" => 300,
+        "DOMPDF_DPI" => 96,
 
         /**
          * Enable inline PHP
@@ -257,7 +257,7 @@ return array(
         /**
          * Use the more-than-experimental HTML5 Lib parser
          */
-        "DOMPDF_ENABLE_HTML5PARSER" => false,
+        "DOMPDF_ENABLE_HTML5PARSER" => true,
 
 
     ),

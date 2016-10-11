@@ -12,6 +12,7 @@ use Illuminate\Http\File;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Session;
@@ -49,9 +50,7 @@ class ProductController extends Controller
         }
 
         $json_order_data = json_encode($json_product, JSON_UNESCAPED_UNICODE);
-
         $json_customer_data = json_encode($customer_data, JSON_UNESCAPED_UNICODE);
-        //dump($json_customer_data);
 
         $order = new Order();
         $order->user_id = $user_id;
@@ -60,9 +59,7 @@ class ProductController extends Controller
 
         if($order->save()){
             $this->createNewInvoice($order);
-            //dump($order->json_customer_data);
         }
-        //dump($order->json_customer_data);
 
     }
 
@@ -70,10 +67,9 @@ class ProductController extends Controller
 
         $pdf = new Dompdf();
         $year = date("Y");
+
         $last_invoice_number = DB::table('invoices')->whereYear('created_at', $year )->orderBy('id', 'desc')->first();
-
         $last_invoice = is_null($last_invoice_number) ? 0 : substr($last_invoice_number->invoice_number, -5);
-
         $invoice_number = $year.str_pad($last_invoice + 1, 5, '0', STR_PAD_LEFT);
 
         $html = view('pdf.invoice')
@@ -106,6 +102,7 @@ class ProductController extends Controller
 
     public function updateBasket()
     {
+
         $input = Input::only('quantity', 'product_id');
         if(isset($input['product_id'])){
             for($i = 0; $i < count($input['product_id']); $i++){
@@ -121,13 +118,9 @@ class ProductController extends Controller
     }
 
     public function basket(Request $request){
-        //dd($request->session()->get('basket'));
         $quantity =  $request->session()->get('basket');
         $product = new Product();
         $basket = ($quantity) ? $product->getHumanDataFromSessionForBasket($quantity): NULL;
-       /* dump($quantity);
-        dump($basket);
-        die();*/
         return view ('basket.index', ['basket' => $basket, 'quantity' => $quantity]);
     }
 
@@ -136,12 +129,8 @@ class ProductController extends Controller
         if (!Auth::check()) {
             return redirect()->back();
         }
-
         $request->session()->put('basket.'.$id, $request->session()->get('basket.'.$id) + 1 );
-
-        /*dump( $request->session()->all());*/
         return redirect()->back();
-
     }
 
     public function addToBasket(Request $request, $id)
@@ -154,10 +143,7 @@ class ProductController extends Controller
         }else{
             $request->session()->put('basket.'.$id, 1 );
         }
-
-        /*dump( $request->session()->all());*/
         return redirect()->back();
-
     }
 
     public function removeItemFromBasket(Request $request, $id)
@@ -168,12 +154,10 @@ class ProductController extends Controller
 
         if($request->session()->get('basket.'.$id) == 1){
             Session::forget('basket.'.$id);
-            //Session::forget('basket');
         }elseif($request->session()->get('basket.'.$id) > 1){
             $request->session()->put('basket.'.$id, $request->session()->get('basket.'.$id) - 1 );
         }
 
-        /*dump( $request->session()->all());*/
         return redirect()->back();
 
     }
@@ -187,10 +171,7 @@ class ProductController extends Controller
         if($request->session()->get('basket.'.$id)){
             Session::forget('basket.'.$id);
         }
-
-        /*dump( $request->session()->all());*/
         return redirect()->back();
-
     }
 
     public function addToFavourites($id)
@@ -218,5 +199,18 @@ class ProductController extends Controller
             $user->favourites()->detach($id);
         }
         return redirect()->back();
+    }
+
+    public function removeItemFromBasketAjax(Request $request, $id){
+
+        if($request->session()->get('basket.'.$id)){
+            Session::forget('basket.'.$id);
+        }
+        $quantity =  $request->session()->get('basket');
+        $product = new Product();
+        $basket = ($quantity) ? $product->getHumanDataFromSessionForBasket($quantity): NULL;
+        $view = view ('basket._items', ['basket' => $basket, 'quantity' => $quantity])->render();
+
+        return response()->json(['error'=>false, 'html' => $view]);
     }
 }
