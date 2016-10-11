@@ -4,12 +4,18 @@
     <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>Faktúra: {{ $invoice_number }} </title>
+    {{--<link href="https://fonts.googleapis.com/css?family=Frank+Ruhl+Libre" rel="stylesheet">--}}
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" type="text/css" href="{{ public_path().'/libs/bootstrap-3.3.7-dist/css/bootstrap.css' }}">
     <style>
+        body{
+            /*font-family: 'Frank Ruhl Libre', sans-serif;*/
+        }
         p,td strong{
-            font-family: DejaVu Sans, sans-serif;
+            /*font-family: DejaVu Sans, sans-serif;*/
             /*font-family: 'Dosis', sans-serif;*/
+            font-family: "DejaVu Sans Mono", monospace;
+
         }
         p{
             padding: -7px;

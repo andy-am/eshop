@@ -1,4 +1,5 @@
 <div class="row">
+    {{ storage_path('fonts/') }}
     @if(!is_null($basket))
         <div class="col-md-12">
             <p class="text-muted lead text-center">You currently have {{ $basket->count() }} item(s) in your cart.</p>

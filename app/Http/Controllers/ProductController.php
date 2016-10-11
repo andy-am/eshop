@@ -7,7 +7,6 @@ use App\Order;
 use App\Product;
 use App\Setting;
 use App\User;
-use Dompdf\Dompdf;
 use Illuminate\Http\File;
 use Illuminate\Http\Request;
 
@@ -16,9 +15,8 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Session;
-use PDF;
 use DB;
-
+use Dompdf\Dompdf;
 class ProductController extends Controller
 {
     public function index(){
@@ -78,7 +76,7 @@ class ProductController extends Controller
             ->with('company_data', Setting::all()->first())
             ->with('invoice_number', $invoice_number);
 
-        $html = mb_convert_encoding($html,'HTML-ENTITIES', 'UTF-8');
+        /*$html = mb_convert_encoding($html,'HTML-ENTITIES', 'UTF-8');*/
 
         $pdf->loadHTML($html);
         $path = 'pdfs/'.$year.'/'.$invoice_number;
