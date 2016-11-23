@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Session;
 use DB;
-use Dompdf\Dompdf;
+use niklasravnsborg\LaravelPdf\Facades\Pdf;
 class ProductController extends Controller
 {
     public function index(){
@@ -63,32 +63,41 @@ class ProductController extends Controller
 
     public function createNewInvoice($order){
 
-        $pdf = new Dompdf();
         $year = date("Y");
 
         $last_invoice_number = DB::table('invoices')->whereYear('created_at', $year )->orderBy('id', 'desc')->first();
         $last_invoice = is_null($last_invoice_number) ? 0 : substr($last_invoice_number->invoice_number, -5);
         $invoice_number = $year.str_pad($last_invoice + 1, 5, '0', STR_PAD_LEFT);
 
-        $html = view('pdf.invoice')
+        /*$html = view('pdf.invoice')
             ->with('order_data', json_decode($order->json_order_data))
             ->with('customer_data', json_decode($order->json_customer_data))
             ->with('company_data', Setting::all()->first())
-            ->with('invoice_number', $invoice_number);
+            ->with('invoice_number', $invoice_number);*/
 
-        /*$html = mb_convert_encoding($html,'HTML-ENTITIES', 'UTF-8');*/
+        $pdf = Pdf::loadView('pdf.invoice', ['order_data' => json_decode($order->json_order_data),
+            'customer_data' => json_decode($order->json_customer_data),
+            'company_data' => Setting::all()->first(),'invoice_number' => $invoice_number]);
 
-        $pdf->loadHTML($html);
+
+        $filename = !empty($inputs['filename']) ? $inputs['filename']: 'document' ;
+        $pdf->download($filename  . '.pdf');
+
         $path = 'pdfs/'.$year.'/'.$invoice_number;
+
         $pdf->render();
+
         $pdf->stream($path);
-        $output = $pdf->output();
+
+
 
         $dir = 'pdfs/'.$year;
         if (!is_dir($dir)) {
             mkdir($dir);
         }
-        file_put_contents($dir.'/'.$invoice_number.'.pdf', $output);
+        $output = $pdf->output($filename,'F');
+
+        //file_put_contents($dir.'/'.$invoice_number.'.pdf', $output);
 
         $invoice = new Invoice();
         $invoice->order_id = $order->id;
