@@ -66,7 +66,7 @@
     </style>
 
 <body>
-{{ public_path().'/libs/bootstrap-3.3.7-dist/css/bootstrap.css' }}
+
     <div class="delivery_box">
         <div class="vertical_line"></div>
         <div class="invoice_number"><strong>Faktúra: # {{ $invoice_number }}</strong></div>
@@ -113,7 +113,7 @@
                             <tr>
                                 <td><strong>Položka</strong></td>
                                 <td class="text-center"><strong>Jednotková cena</strong></td>
-                                <td class="text-center"><strong><>Počet</strong></td>
+                                <td class="text-center"><strong>Počet</strong></td>
                                 <td class="text-center"><strong>DPH</strong></td>
                                 <td class="text-right"><strong>Spolu</strong></td>
                             </tr>
@@ -127,8 +127,8 @@
                                     <td>{{ $data->title }}</td>
                                     <td class="text-center">{{ $data->price }}&euro;</td>
                                     <td class="text-center">{{ $data->count }}</td>
-                                    <td class="text-center">{{ $data->dph.'%' }}</td>
-                                    <td class="text-right">{{ $data->total_price_dph_product }}&euro;</td>
+                                    <td class="text-center">{{ $data->dph }}&percnt;</td>
+                                    <td class="text-right">{{ number_format($data->total_price_dph_product, 2, ',', ' ') }}&euro;</td>
                                 </tr>
                                 <?php $total += $data->total_price_product; ?>
                                 <?php $total_dph += $data->total_price_dph_product; ?>

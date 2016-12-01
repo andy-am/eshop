@@ -9,14 +9,13 @@ use App\Setting;
 use App\User;
 use Illuminate\Http\File;
 use Illuminate\Http\Request;
-
 use App\Http\Requests;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
 use DB;
-use niklasravnsborg\LaravelPdf\Facades\Pdf;
+use Barryvdh\Snappy\Facades\SnappyPdf as PDF;
 class ProductController extends Controller
 {
     public function index(){
@@ -30,10 +29,10 @@ class ProductController extends Controller
     }
 
     public function doOrder(Request $request){
+
         $data = $request->session()->get('basket');
         $user_id = Auth::user()->id;
         $products = Product::whereIn('id', array_keys($data))->get();
-
 
         $json_product = [];
         $customer_data = User::find(Auth::user()->id)->first()->toArray();
@@ -58,58 +57,43 @@ class ProductController extends Controller
         if($order->save()){
             $this->createNewInvoice($order);
         }
-
+        redirect()->back();
     }
 
     public function createNewInvoice($order){
 
         $year = date("Y");
-
         $last_invoice_number = DB::table('invoices')->whereYear('created_at', $year )->orderBy('id', 'desc')->first();
         $last_invoice = is_null($last_invoice_number) ? 0 : substr($last_invoice_number->invoice_number, -5);
         $invoice_number = $year.str_pad($last_invoice + 1, 5, '0', STR_PAD_LEFT);
 
-        /*$html = view('pdf.invoice')
-            ->with('order_data', json_decode($order->json_order_data))
-            ->with('customer_data', json_decode($order->json_customer_data))
-            ->with('company_data', Setting::all()->first())
-            ->with('invoice_number', $invoice_number);*/
-
-        $pdf = Pdf::loadView('pdf.invoice', ['order_data' => json_decode($order->json_order_data),
+        $pdf = PDF::loadView('pdf.invoice', ['order_data' => json_decode($order->json_order_data),
             'customer_data' => json_decode($order->json_customer_data),
-            'company_data' => Setting::all()->first(),'invoice_number' => $invoice_number]);
+            'company_data' => Setting::all()->first(), 'invoice_number' => $invoice_number]);
 
 
-        $filename = !empty($inputs['filename']) ? $inputs['filename']: 'document' ;
-        $pdf->download($filename  . '.pdf');
+        $dir = public_path().'/pdfs/';  //   .$year.'/';
 
-        $path = 'pdfs/'.$year.'/'.$invoice_number;
+        $filename = $invoice_number.'-'.time().'.pdf';
 
-        $pdf->render();
-
-        $pdf->stream($path);
-
-
-
-        $dir = 'pdfs/'.$year;
         if (!is_dir($dir)) {
             mkdir($dir);
         }
-        $output = $pdf->output($filename,'F');
 
-        //file_put_contents($dir.'/'.$invoice_number.'.pdf', $output);
+         $pdf->save($filename);
+        return Redirect::back();
 
-        $invoice = new Invoice();
+       /* $invoice = new Invoice();
         $invoice->order_id = $order->id;
         $invoice->invoice_number = $invoice_number;
-        $invoice->url = $path.'.pdf';
-        $invoice->save();
+        $invoice->url = $dir.$filename;
+        $invoice->save();*/
+
 
     }
 
     public function updateBasket()
     {
-
         $input = Input::only('quantity', 'product_id');
         if(isset($input['product_id'])){
             for($i = 0; $i < count($input['product_id']); $i++){

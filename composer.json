@@ -9,7 +9,8 @@
         "laravel/framework": "5.3.*",
         "laravelcollective/html": "~5.0",
         "barryvdh/laravel-debugbar": "^2.2",
-        "niklasravnsborg/laravel-pdf": "^1.1"
+        "barryvdh/laravel-snappy": "^0.3.1",
+        "jshmrtn/wkhtmltopdf-osx-x86-64": "0.12.2.1"
 
     },
     "require-dev": {
